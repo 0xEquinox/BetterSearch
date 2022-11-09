@@ -1,6 +1,7 @@
 use std::io;
 use std::{fs::File, path::PathBuf};
 
+use crate::componenets;
 use crate::executor;
 use eframe::{egui, run_native, NativeOptions};
 use egui::Ui;
@@ -39,14 +40,12 @@ impl eframe::App for Interface {
             }
             if self.input.len() > 0 {
                 for i in 0..self.displayed_shortcuts.len() {
-                    frame.set_window_size(egui::Vec2::new(600 as f32, (75 + 30 * (i + 1)) as f32));
-
-                    let area = egui::Area::new("new section")
-                        .fixed_pos(egui::Pos2::new(10.0, (75 + 30 * i) as f32))
-                        .id(egui::Id::new(i))
-                        .show(ctx, |ui| {
-                            ui.label(self.displayed_shortcuts.get(i).unwrap().name.clone());
-                        });
+                    frame.set_window_size(egui::Vec2::new(600 as f32, (75 + 50 * (i + 1)) as f32));
+                    ui.add(componenets::app_entry(
+                        &mut false,
+                        self.displayed_shortcuts[i].name.clone(),
+                        i as i32,
+                    ));
                 }
             } else {
                 frame.set_window_size(egui::Vec2::new(600.0, 75.0));
