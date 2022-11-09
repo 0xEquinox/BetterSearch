@@ -2,7 +2,7 @@ use std::io;
 use std::{fs::File, path::PathBuf};
 
 use crate::executor;
-use eframe::{egui, epi, run_native, NativeOptions};
+use eframe::{egui, run_native, NativeOptions};
 use egui::Ui;
 use serde::{Deserialize, Serialize};
 
@@ -19,8 +19,8 @@ struct Interface {
     shortcut_path: PathBuf,
 }
 
-impl epi::App for Interface {
-    fn update(&mut self, ctx: &egui::Context, frame: &epi::Frame) {
+impl eframe::App for Interface {
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui: &mut Ui| {
             frame.set_decorations(false);
             ctx.set_visuals(egui::style::Visuals::dark());
@@ -53,10 +53,6 @@ impl epi::App for Interface {
             }
         });
     }
-
-    fn name(&self) -> &str {
-        "Better Search"
-    }
 }
 
 pub fn run_interface(shortcut_file: PathBuf) {
@@ -77,9 +73,10 @@ pub fn run_interface(shortcut_file: PathBuf) {
         max_window_size: None,
         resizable: false,
         transparent: false,
+        ..Default::default()
     };
     executor::pupulate_shortcuts(shortcut_file);
-    run_native(Box::new(app), window_option);
+    run_native("Better Search", window_option, Box::new(|cc| Box::new(app)));
 }
 
 fn reload_shortcuts(shortcut_file: &PathBuf) -> Vec<Shortcut> {
