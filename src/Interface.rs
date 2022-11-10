@@ -5,6 +5,7 @@ use crate::componenets;
 use crate::executor;
 use eframe::{egui, run_native, NativeOptions};
 use egui::Ui;
+use lnk::ShellLink;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
@@ -41,11 +42,39 @@ impl eframe::App for Interface {
             if self.input.len() > 0 {
                 for i in 0..self.displayed_shortcuts.len() {
                     frame.set_window_size(egui::Vec2::new(600 as f32, (75 + 50 * (i + 1)) as f32));
-                    ui.add(componenets::app_entry(
-                        &mut false,
-                        self.displayed_shortcuts[i].name.clone(),
-                        i as i32,
-                    ));
+                    if ui
+                        .add(componenets::app_entry(
+                            &mut false,
+                            self.displayed_shortcuts[i].name.clone(),
+                            i as i32,
+                        ))
+                        .clicked()
+                    {
+                        use std::process::Command;
+
+                        let og_path =
+                            self.displayed_shortcuts[i].path.clone().as_str()[4..].to_owned();
+
+                        let mut vec_path: Vec<String> =
+                            og_path.split("\\").map(|str| str.to_owned()).collect();
+
+                        for i in 0..vec_path.len() {
+                            let comp = vec_path.get_mut(i).unwrap();
+
+                            if comp.contains(" ") {
+                                let formated_text = format!("\'{}\'", comp);
+                                *comp = formated_text;
+                            }
+                        }
+
+                        let path = vec_path.join("/");
+
+                        println!("{:?}", path);
+
+                        let mut command = Command::new("powershell");
+                        command.arg(path);
+                        command.status().expect("Failed to execute");
+                    };
                 }
             } else {
                 frame.set_window_size(egui::Vec2::new(600.0, 75.0));

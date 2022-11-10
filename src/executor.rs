@@ -58,7 +58,14 @@ pub fn pupulate_shortcuts(shortcut_file: PathBuf) {
                 file_name.truncate(length - 4);
                 Shortcut {
                     name: file_name,
-                    path: file.unwrap().path().into_os_string().into_string().unwrap(),
+                    path: file
+                        .unwrap()
+                        .path()
+                        .canonicalize()
+                        .unwrap()
+                        .into_os_string()
+                        .into_string()
+                        .unwrap(),
                 }
             })
             .collect();
