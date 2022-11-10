@@ -5,7 +5,6 @@ use crate::componenets;
 use crate::executor;
 use eframe::{egui, run_native, NativeOptions};
 use egui::Ui;
-use lnk::ShellLink;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
@@ -115,11 +114,4 @@ fn reload_shortcuts(shortcut_file: &PathBuf) -> Vec<Shortcut> {
         serde_json::from_reader(&shortcuts_json).expect("Failed to parse json");
 
     shortcuts
-}
-
-fn save_shortcuts(shortcut_file: &str, shortcuts: &Vec<Shortcut>) {
-    let shortcuts_json = File::create(&shortcut_file).unwrap();
-
-    // Write shortcuts to file
-    serde_json::to_writer_pretty(shortcuts_json, shortcuts).expect("Failed to write json");
 }
