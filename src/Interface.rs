@@ -40,7 +40,7 @@ impl eframe::App for Interface {
             }
             if self.input.len() > 0 {
                 for i in 0..self.displayed_shortcuts.len() {
-                    frame.set_window_size(egui::Vec2::new(600 as f32, (75 + 50 * (i + 1)) as f32));
+                    frame.set_window_size(egui::Vec2::new(600 as f32, (83 + 50 * (i + 1)) as f32));
                     if ui
                         .add(componenets::app_entry(
                             &mut false,
